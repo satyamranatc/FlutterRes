@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flutter From Zero — A Beginner's Handbook</title>
+<meta name="description" content="A friendly, step-by-step Flutter handbook for absolute beginners: widgets, layouts, state, navigation, forms, APIs, databases and a full learning roadmap.">
+<style>
+:root{
+  --bg:#ffffff; --surface:#f6f8fa; --surface-2:#eef2f6;
+  --text:#1f2933; --text-2:#52606d; --text-3:#7b8794;
+  --border:#e1e6eb;
+  --accent:#0553b1; --accent-2:#027dfd; --accent-soft:#e8f2ff;
+  --ok:#0f7b4a; --ok-soft:#e6f6ee;
+  --warn:#9a5b00; --warn-soft:#fff5e0;
+  --bad:#b42318; --bad-soft:#fdecea;
+  --code-bg:#0f1b2d; --code-text:#e6edf5;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 2px 12px rgba(16,24,40,.06);
+  --nav-h:60px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 20px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--accent-2)}
+:focus-visible{outline:3px solid var(--accent-2);outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;z-index:200}
+.skip:focus{left:8px;color:#fff}
+
+/* Top bar */
+.topbar{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text);text-decoration:none;font-size:18px;white-space:nowrap}
+.brand-mark{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.brand-mark svg{width:16px;height:16px;fill:#fff}
+.toplinks{display:flex;gap:4px;margin-left:auto}
+.toplinks a{color:var(--text-2);text-decoration:none;font-size:14px;font-weight:500;padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}
+.toplinks a:hover{background:var(--surface);color:var(--text)}
+.menu-btn{display:none;margin-left:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;min-height:44px}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent-2);z-index:150;transition:width .08s linear}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:268px minmax(0,1fr) 224px;max-width:1360px;margin:0 auto;align-items:start}
+.sidebar{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;padding:28px 16px 40px 24px;border-right:1px solid var(--border)}
+.sidebar h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin:0 0 10px 12px}
+.sidebar ol{list-style:none;margin:0;padding:0}
+.sidebar a{display:flex;gap:10px;padding:7px 12px;border-radius:8px;color:var(--text-2);text-decoration:none;font-size:14.5px;line-height:1.4;transition:background .15s,color .15s}
+.sidebar a span.n{color:var(--text-3);font-variant-numeric:tabular-nums;min-width:20px}
+.sidebar a:hover{background:var(--surface);color:var(--text)}
+.sidebar a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.sidebar a.active span.n{color:var(--accent)}
+.toc{position:sticky;top:var(--nav-h);padding:32px 24px 40px 12px;max-height:calc(100vh - var(--nav-h));overflow-y:auto;font-size:13.5px}
+.toc h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin:0 0 10px}
+.toc ul{list-style:none;margin:0;padding:0;border-left:1px solid var(--border)}
+.toc a{display:block;padding:4px 0 4px 14px;margin-left:-1px;border-left:2px solid transparent;color:var(--text-2);text-decoration:none;line-height:1.4}
+.toc a:hover{color:var(--text)}
+.toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+main{padding:0 48px 80px;min-width:0}
+article{max-width:740px;margin:0 auto}
+
+/* Hero */
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--accent);margin:0 0 12px}
+.hero h1{font-size:clamp(34px,5vw,52px);line-height:1.1;letter-spacing:-.02em;margin:0 0 20px}
+.hero p.lead{font-size:20px;color:var(--text-2);margin:0 0 28px}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;transition:background .15s,transform .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#06458f;color:#fff}
+.btn-ghost{color:var(--accent);margin-left:8px}
+.btn-ghost:hover{background:var(--accent-soft)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:28px;font-size:14px;color:var(--text-3)}
+
+/* Sections & typography */
+section.chapter{padding:64px 0 8px;border-bottom:1px solid var(--border)}
+section.chapter:last-of-type{border-bottom:0}
+.chapter-label{font-size:13px;font-weight:600;color:var(--accent);margin:0 0 6px}
+h2.title{font-size:clamp(28px,4vw,36px);line-height:1.2;letter-spacing:-.015em;margin:0 0 20px}
+h3{font-size:22px;line-height:1.3;margin:44px 0 12px;letter-spacing:-.005em}
+h4{font-size:17px;margin:28px 0 8px}
+p{margin:0 0 16px}
+ul.list,ol.list{padding-left:22px;margin:0 0 20px}
+ul.list li,ol.list li{margin-bottom:6px}
+code.i{font-family:var(--mono);font-size:.88em;background:var(--surface-2);padding:2px 6px;border-radius:6px;color:#0b3d7a}
+strong{font-weight:650}
+.goal{background:var(--surface);border-radius:var(--radius);padding:16px 20px;margin:0 0 24px;font-size:15.5px;color:var(--text-2)}
+.goal strong{color:var(--text)}
+
+/* Callouts */
+.callout{border-radius:var(--radius);padding:16px 20px;margin:24px 0;border:1px solid;font-size:16px}
+.callout p:last-child{margin:0}
+.callout .tag{display:block;font-weight:700;font-size:13px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.callout.note{background:var(--accent-soft);border-color:#c7e0ff}.callout.note .tag{color:var(--accent)}
+.callout.tip{background:var(--ok-soft);border-color:#bfe6d1}.callout.tip .tag{color:var(--ok)}
+.callout.warn{background:var(--warn-soft);border-color:#f5dca6}.callout.warn .tag{color:var(--warn)}
+.callout.danger{background:var(--bad-soft);border-color:#f6c8c3}.callout.danger .tag{color:var(--bad)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:24px 0}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+.card:hover{border-color:#b8d4f5;transform:translateY(-2px)}
+.card h4{margin:0 0 6px;font-size:16px}
+.card p{margin:0;font-size:15px;color:var(--text-2)}
+.card .k{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;display:block}
+.card.pro{border-top:3px solid var(--ok)}
+.card.con{border-top:3px solid var(--warn)}
+
+/* Widget reference */
+.widget{border:1px solid var(--border);border-radius:var(--radius);margin:20px 0;overflow:hidden}
+.widget header{display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border)}
+.widget header h4{margin:0;font-family:var(--mono);font-size:15px;color:var(--accent)}
+.widget .body{padding:16px 18px 4px}
+.widget .body p{font-size:15.5px;margin-bottom:12px}
+.widget .body .label{font-weight:650;color:var(--text)}
+.widget pre{margin:0 -18px;border-radius:0}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:24px 0;border:1px solid var(--border);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}
+th{background:var(--surface);font-size:13px;color:var(--text-2);text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+
+/* Code */
+.code{position:relative;margin:20px 0;border-radius:var(--radius);overflow:hidden;background:var(--code-bg)}
+.code .bar{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 16px;background:#16263d;color:#9fb3c8;font-size:12.5px;font-family:var(--mono)}
+.code .lang{display:inline-flex;align-items:center;gap:8px}
+.code .lang::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-2)}
+.code.other .lang::before{background:#f2a83b}
+.copy{background:transparent;color:#c8d6e5;border:1px solid #2b4263;border-radius:8px;font:inherit;font-size:12.5px;padding:5px 12px;cursor:pointer;min-height:32px;transition:background .15s}
+.copy:hover{background:#243a5a}
+.copy.done{color:#7be0a7;border-color:#2f6b4d}
+pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.65;color:var(--code-text);tab-size:2}
+pre code{font-family:inherit}
+.tk-k{color:#8ec5ff}.tk-s{color:#a5e3a0}.tk-c{color:#7f93a8;font-style:italic}.tk-n{color:#f4b27a}.tk-t{color:#d6b3ff}
+.explain{background:var(--surface);border-radius:var(--radius);padding:16px 20px;margin:0 0 24px}
+.explain h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-2)}
+.explain ul{margin:0;padding-left:20px;font-size:15.5px}
+.explain li{margin-bottom:6px}
+
+/* Diagrams */
+.diagram{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;margin:24px 0}
+.diagram .cap{text-align:center;font-size:13.5px;color:var(--text-3);margin-top:16px}
+.flow{display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap}
+.node{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center;min-width:112px;font-size:14px;box-shadow:var(--shadow)}
+.node b{display:block;font-size:14.5px}
+.node small{color:var(--text-3);font-size:12.5px;display:block;line-height:1.35;margin-top:2px}
+.node.a{border-color:var(--accent-2);background:var(--accent-soft)}
+.link{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;color:var(--text-3);padding:0 8px;min-width:76px;gap:2px}
+.link i{display:block;width:100%;height:2px;background:var(--text-3);position:relative}
+.link i::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--text-3);border-right:0}
+.link i.back{margin-top:4px}
+.link i.back::after{right:auto;left:-1px;border-left:0;border-right:7px solid var(--text-3)}
+.stack-col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.tree{font-family:var(--mono);font-size:13.5px;line-height:1.9;color:var(--text-2)}
+.tree b{color:var(--accent)}
+.phone{width:200px;border:2px solid #1f2933;border-radius:22px;padding:14px 10px;background:#fff;margin:0 auto}
+.phone .ab{background:var(--accent);color:#fff;font-size:12px;padding:8px 10px;border-radius:8px 8px 0 0;font-weight:600}
+.phone .bd{padding:10px;border:1px solid var(--border);border-top:0;border-radius:0 0 8px 8px;display:flex;flex-direction:column;gap:8px;font-size:12px}
+.mini{background:var(--surface-2);border-radius:6px;padding:6px 8px;text-align:center}
+.mini.hl{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.demo-row{display:flex;gap:8px}
+.demo-row .mini{flex:1}
+.demo-row .mini.w2{flex:2}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ba .phone{width:100%;max-width:230px}
+.ba h4{text-align:center;margin:0 0 10px;font-size:14px}
+.ba .before .bd{gap:2px;font-size:11px;font-family:Times,serif}
+.ba .after .mini{text-align:left}
+.steps{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.steps .node{min-width:130px}
+.steps .arrow{color:var(--text-3);font-size:20px}
+
+/* Roadmap */
+.roadmap{counter-reset:r;list-style:none;margin:24px 0;padding:0}
+.roadmap li{counter-increment:r;position:relative;padding:14px 16px 14px 60px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;background:#fff}
+.roadmap li::before{content:counter(r);position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:14px}
+.roadmap li b{display:block}
+.roadmap li span{font-size:15px;color:var(--text-2)}
+
+/* Pager */
+.pager{display:flex;justify-content:space-between;gap:16px;margin:40px 0 0;padding-top:24px}
+.pager a{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;text-decoration:none;color:var(--text);transition:border-color .15s}
+.pager a:hover{border-color:var(--accent-2)}
+.pager small{display:block;color:var(--text-3);font-size:13px}
+.pager a:last-child{text-align:right}
+footer.site{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-3);font-size:14px}
+
+/* Responsive */
+@media (max-width:1180px){
+  .layout{grid-template-columns:260px minmax(0,1fr)}
+  .toc{display:none}
+}
+@media (max-width:860px){
+  .layout{display:block}
+  .toplinks{display:none}
+  .menu-btn{display:inline-flex;align-items:center;gap:8px}
+  .topbar{padding:0 16px}
+  .sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;width:min(86vw,320px);height:auto;background:#fff;z-index:99;transform:translateX(-102%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.15);border-right:0}
+  .sidebar.open{transform:none}
+  .scrim{position:fixed;inset:var(--nav-h) 0 0 0;background:rgba(15,27,45,.35);z-index:98;opacity:0;pointer-events:none;transition:opacity .2s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  main{padding:0 20px 64px}
+  body{font-size:16.5px}
+  .ba{grid-template-columns:1fr}
+  .ba .phone{margin:0 auto}
+  .link{flex-direction:row;padding:6px 0;min-width:0;width:100%}
+  .link i{display:none}
+  .link::after{content:"↕"}
+  .flow{flex-direction:column;align-items:center}
+  .node{width:100%;max-width:260px}
+  .btn-ghost{margin-left:0}
+}
+@media print{.topbar,.sidebar,.toc,.progress,.copy{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="progress" id="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="Flutter From Zero, home">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.3 2 4 12.3l3 3L20.4 2zM14.3 11.3 9.9 15.7l4.4 4.4h6.1l-4.4-4.4 4.4-4.4z"/></svg></span>
+    Flutter From Zero
+  </a>
+  <nav class="toplinks" aria-label="Quick links">
+    <a href="#s1">Basics</a>
+    <a href="#s3">Widgets</a>
+    <a href="#s5">First app</a>
+    <a href="#s10">APIs</a>
+    <a href="#s14">Roadmap</a>
+  </nav>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="sidebar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    Topics
+  </button>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout" id="top">
+  <aside class="sidebar" id="sidebar" aria-label="Chapters">
+    <nav aria-label="Chapter navigation">
+      <h2>Chapters</h2>
+      <ol id="chapterList">
+        <li><a href="#s1"><span class="n">1</span>Introduction to Flutter</a></li>
+        <li><a href="#s2"><span class="n">2</span>App Architecture</a></li>
+        <li><a href="#s3"><span class="n">3</span>Widgets and Their Types</a></li>
+        <li><a href="#s4"><span class="n">4</span>Layout Basics</a></li>
+        <li><a href="#s5"><span class="n">5</span>Build Your First App</a></li>
+        <li><a href="#s6"><span class="n">6</span>Understanding StatefulWidget</a></li>
+        <li><a href="#s7"><span class="n">7</span>Navigation and Screens</a></li>
+        <li><a href="#s8"><span class="n">8</span>Building a Good UI</a></li>
+        <li><a href="#s9"><span class="n">9</span>Forms and User Input</a></li>
+        <li><a href="#s10"><span class="n">10</span>APIs and Backend</a></li>
+        <li><a href="#s11"><span class="n">11</span>Database Basics</a></li>
+        <li><a href="#s12"><span class="n">12</span>State Management</a></li>
+        <li><a href="#s13"><span class="n">13</span>Common Mistakes</a></li>
+        <li><a href="#s14"><span class="n">14</span>Roadmap and Projects</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main id="content">
+  <article>
+
+    <div class="hero">
+      <p class="eyebrow">A beginner's handbook</p>
+      <h1>Learn Flutter, one clear step at a time.</h1>
+      <p class="lead">No experience needed. You will go from "What is Flutter?" to building screens, navigating between them, collecting input, and talking to a backend.</p>
+      <a class="btn btn-primary" href="#s1">Start with Chapter 1</a>
+      <a class="btn btn-ghost" href="#s14">Jump to the roadmap</a>
+      <div class="meta"><span>14 chapters</span><span>Dart code you can copy</span><span>About 90 minutes to read</span></div>
+    </div>
+
+    <div class="callout note" style="margin-top:32px">
+      <span class="tag">How to read this page</span>
+      <p>This website is plain HTML, CSS and JavaScript. But everything you <em>learn</em> here is <strong>Flutter, written in Dart</strong>. Flutter code does not run inside this web page. To run it, you install Flutter on your computer and paste the code into a project. Blocks labelled <code class="i">Dart</code> are Flutter code. Blocks labelled <code class="i">YAML</code>, <code class="i">JSON</code>, <code class="i">SQL</code> or <code class="i">Node.js</code> are something else.</p>
+    </div>
+
+    <!-- ================= 1 ================= -->
+    <section class="chapter" id="s1" data-title="Introduction to Flutter">
+      <p class="chapter-label">Chapter 1</p>
+      <h2 class="title">Introduction to Flutter</h2>
+      <p class="goal"><strong>By the end:</strong> you can explain what Flutter and Dart are, when to use them, and how you will work day to day.</p>
+
+      <h3 id="s1-what">What is Flutter?</h3>
+      <p>Flutter is a free toolkit from Google for building apps. With <strong>one codebase</strong> you can make apps for Android, iOS, web, Windows, macOS and Linux.</p>
+      <p>Think of it like a set of LEGO bricks. Instead of carving every shape from scratch, you snap together ready-made pieces (called <em>widgets</em>) to build your screens.</p>
+
+      <h3 id="s1-dart">What is Dart?</h3>
+      <p>Dart is the programming language you write Flutter apps in. It is also made by Google. If you have seen Java, JavaScript, C# or Kotlin, Dart will feel familiar.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>void main() {
+  String name = 'Asha';
+  int age = 20;
+  print('Hello, $name. You are $age years old.');
+}</code></pre></div>
+      <div class="explain"><h4>In plain English</h4><ul>
+        <li><code class="i">main()</code> is where every Dart program starts.</li>
+        <li><code class="i">String</code> holds text, <code class="i">int</code> holds whole numbers.</li>
+        <li><code class="i">$name</code> drops a variable's value into a string.</li>
+      </ul></div>
+
+      <h3 id="s1-why">Why use Flutter?</h3>
+      <div class="cards">
+        <div class="card"><span class="k">ONE CODEBASE</span><h4>Write once</h4><p>One project targets many platforms, so you do less duplicate work.</p></div>
+        <div class="card"><span class="k">FAST</span><h4>Hot reload</h4><p>Change code, save, and see the result in under a second without restarting.</p></div>
+        <div class="card"><span class="k">CONSISTENT</span><h4>Your own pixels</h4><p>Flutter draws every pixel itself, so your app looks the same on every device.</p></div>
+        <div class="card"><span class="k">COMMUNITY</span><h4>Packages</h4><p>Thousands of free packages on pub.dev add features like maps and payments.</p></div>
+      </div>
+
+      <h3 id="s1-pros">Advantages and limitations</h3>
+      <div class="cards">
+        <div class="card pro"><h4>Advantages</h4><p>Single codebase · quick development · beautiful, custom UIs · strong performance · great documentation.</p></div>
+        <div class="card con"><h4>Limitations</h4><p>Apps are a bit larger than minimal native apps · you learn Dart · some brand-new platform features arrive later · web is better for apps than for content sites.</p></div>
+      </div>
+
+      <h3 id="s1-types">What can Flutter build?</h3>
+      <ul class="list">
+        <li><strong>Mobile apps:</strong> shopping, learning, fitness, social and banking apps.</li>
+        <li><strong>Web apps:</strong> dashboards and admin tools (not ideal for blogs or SEO-heavy sites).</li>
+        <li><strong>Desktop apps:</strong> tools for Windows, macOS and Linux.</li>
+        <li><strong>Embedded and kiosk screens:</strong> in-car displays, smart screens.</li>
+      </ul>
+
+      <h3 id="s1-compare">Flutter vs native Android vs React Native</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Topic</th><th>Flutter</th><th>Native Android</th><th>React Native</th></tr></thead>
+        <tbody>
+          <tr><td>Language</td><td>Dart</td><td>Kotlin / Java</td><td>JavaScript / TypeScript</td></tr>
+          <tr><td>Platforms</td><td>Android, iOS, web, desktop</td><td>Android only</td><td>Android, iOS (web via extras)</td></tr>
+          <tr><td>UI approach</td><td>Draws its own widgets</td><td>Uses Android's views / Compose</td><td>Maps to native components</td></tr>
+          <tr><td>Best for</td><td>Custom, consistent UI on many platforms</td><td>Deepest Android access</td><td>Teams already strong in JavaScript</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="s1-workflow">The Flutter development workflow</h3>
+      <div class="diagram">
+        <div class="steps">
+          <div class="node a"><b>1. Install</b><small>Flutter SDK + editor</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>2. Create</b><small>flutter create</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>3. Code</b><small>Edit lib/main.dart</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>4. Run</b><small>Emulator or phone</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>5. Hot reload</b><small>See changes instantly</small></div>
+        </div>
+        <div class="cap">The loop you will repeat hundreds of times: code → hot reload → look → improve.</div>
+      </div>
+      <div class="code other"><div class="bar"><span class="lang">Terminal</span><button class="copy" type="button">Copy</button></div><pre><code>flutter doctor            # checks your setup
+flutter create my_app     # makes a new project
+cd my_app
+flutter run               # runs it on a device or emulator</code></pre></div>
+      <div class="callout tip"><span class="tag">Tip</span><p>Run <code class="i">flutter doctor</code> first. It tells you exactly what is missing from your setup. Press <code class="i">r</code> in the terminal for hot reload.</p></div>
+    </section>
+
+    <!-- ================= 2 ================= -->
+    <section class="chapter" id="s2" data-title="App Architecture">
+      <p class="chapter-label">Chapter 2</p>
+      <h2 class="title">Understanding the App Architecture</h2>
+      <p class="goal"><strong>By the end:</strong> you know what each part of a real app does and how data flows between them.</p>
+
+      <p>A real app is more than screens. Picture a restaurant: the <strong>Flutter app</strong> is the dining room and menu, the <strong>API</strong> is the waiter, the <strong>backend</strong> is the kitchen, and the <strong>database</strong> is the pantry.</p>
+
+      <div class="diagram" role="img" aria-label="Diagram: Flutter app sends requests to a backend API which reads and writes a database, then returns JSON.">
+        <div class="flow">
+          <div class="node a"><b>Flutter app</b><small>Screens, buttons,<br>what the user sees</small></div>
+          <div class="link"><span>request</span><i></i><i class="back"></i><span>JSON</span></div>
+          <div class="node"><b>Backend API</b><small>Rules, logins,<br>business logic</small></div>
+          <div class="link"><span>query</span><i></i><i class="back"></i><span>rows</span></div>
+          <div class="node"><b>Database</b><small>Users, courses,<br>saved data</small></div>
+        </div>
+        <div class="cap">Your Flutter app should talk to the backend. The backend talks to the database.</div>
+      </div>
+
+      <h3 id="s2-parts">The parts, one by one</h3>
+      <div class="cards">
+        <div class="card"><span class="k">FRONTEND</span><h4>Flutter app</h4><p>Runs on the user's device. Shows UI and collects input.</p></div>
+        <div class="card"><span class="k">BACKEND</span><h4>Server</h4><p>A program on a computer in the cloud. Applies rules and protects data.</p></div>
+        <div class="card"><span class="k">STORAGE</span><h4>Database</h4><p>Stores information permanently: users, courses, orders.</p></div>
+        <div class="card"><span class="k">BRIDGE</span><h4>API</h4><p>A list of addresses (URLs) the app can call to get or change data.</p></div>
+        <div class="card"><span class="k">IDENTITY</span><h4>Authentication</h4><p>Proves who the user is, usually with email and password, then a token.</p></div>
+        <div class="card"><span class="k">GO LIVE</span><h4>Hosting</h4><p>Where your backend runs online. The app goes to Play Store or App Store.</p></div>
+      </div>
+
+      <h3 id="s2-example">Example: a student app</h3>
+      <p>Imagine an app that lists courses and remembers who is logged in.</p>
+      <ol class="list">
+        <li>The student enters email and password in the Flutter app.</li>
+        <li>The app sends them to <code class="i">POST /login</code> on the backend.</li>
+        <li>The backend checks the database and replies with a <strong>token</strong>.</li>
+        <li>The app asks <code class="i">GET /courses</code> with that token.</li>
+        <li>The backend fetches courses from the database and returns JSON.</li>
+        <li>Flutter turns the JSON into a list on screen.</li>
+      </ol>
+      <div class="callout note"><span class="tag">Remember</span><p>You can start learning Flutter with <em>no</em> backend at all. Chapters 3 to 9 use only local data. We add APIs in Chapter 10.</p></div>
+    </section>
+
+    <!-- ================= 3 ================= -->
+    <section class="chapter" id="s3" data-title="Widgets and Their Types">
+      <p class="chapter-label">Chapter 3</p>
+      <h2 class="title">Flutter Widgets and Their Types</h2>
+      <p class="goal"><strong>By the end:</strong> you recognise the most important widgets and know when to reach for each.</p>
+
+      <h3 id="s3-what">What is a widget?</h3>
+      <p>In Flutter, <strong>everything on screen is a widget</strong>: text, buttons, padding, even the app itself. Widgets are nested inside other widgets to form a <em>widget tree</em>.</p>
+      <div class="diagram">
+        <div class="tree" aria-label="Example widget tree">
+<b>MaterialApp</b><br>
+&nbsp;└─ <b>Scaffold</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├─ <b>AppBar</b> → Text("Home")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>Padding</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>Column</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <b>Text</b>("Hello")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>ElevatedButton</b>
+        </div>
+        <div class="cap">A widget tree. Parents contain children.</div>
+      </div>
+
+      <h3 id="s3-stateless">StatelessWidget vs StatefulWidget</h3>
+      <div class="cards">
+        <div class="card"><span class="k">STATELESS</span><h4>Never changes</h4><p>Draws the same thing for the same input. Example: a title, an icon, a logo.</p></div>
+        <div class="card"><span class="k">STATEFUL</span><h4>Can change</h4><p>Holds data that changes over time. Example: a counter, a checkbox, a form.</p></div>
+      </div>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>import 'package:flutter/material.dart';
+
+class Greeting extends StatelessWidget {
+  const Greeting({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Hello, $name!');
+  }
+}</code></pre></div>
+      <p>Every widget has a <code class="i">build</code> method that returns what it looks like. We cover stateful widgets fully in Chapter 6.</p>
+
+      <h3 id="s3-ref">Essential widgets reference</h3>
+      <p>Each entry has a <span style="font-weight:650">purpose</span>, a tiny example, and <span style="font-weight:650">when to use it</span>.</p>
+
+      <div class="widget"><header><h4>MaterialApp</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> The root of most apps. Sets the theme, title, home screen and routes.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>MaterialApp(
+  title: 'My App',
+  theme: ThemeData(colorSchemeSeed: Colors.blue),
+  home: const HomePage(),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> once, at the top of your app.</p></div></div>
+
+      <div class="widget"><header><h4>Scaffold</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> The basic page structure: app bar, body, drawer, bottom bar, floating button.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Scaffold(
+  appBar: AppBar(title: const Text('Home')),
+  body: const Center(child: Text('Welcome')),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> as the root of nearly every screen.</p></div></div>
+
+      <div class="widget"><header><h4>Container and SizedBox</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> <code class="i">Container</code> is a flexible box with size, color, padding and decoration. <code class="i">SizedBox</code> is a lightweight box for fixed sizes or empty gaps.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Container(
+  width: 120,
+  height: 60,
+  padding: const EdgeInsets.all(8),
+  decoration: BoxDecoration(
+    color: Colors.blue.shade50,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: const Text('Box'),
+)
+
+const SizedBox(height: 16)   // a 16-pixel vertical gap</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">Container</code> when you need decoration; <code class="i">SizedBox</code> for spacing.</p></div></div>
+
+      <div class="widget"><header><h4>Text and Image</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Show words and pictures.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>const Text(
+  'Learn Flutter',
+  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+)
+
+Image.network(
+  'https://picsum.photos/200',
+  width: 100,
+  height: 100,
+  fit: BoxFit.cover,
+)</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">Image.asset</code> for pictures bundled in your app, <code class="i">Image.network</code> for pictures from the internet.</p></div></div>
+
+      <div class="widget"><header><h4>Icon and Buttons</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Icons add meaning. Buttons respond to taps through <code class="i">onPressed</code>.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>const Icon(Icons.favorite, color: Colors.red, size: 28)
+
+ElevatedButton(
+  onPressed: () =&gt; print('Saved'),
+  child: const Text('Save'),
+)
+
+TextButton(onPressed: () {}, child: const Text('Cancel'))
+IconButton(onPressed: () {}, icon: const Icon(Icons.share))</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">ElevatedButton</code> for the main action, <code class="i">TextButton</code> for secondary ones, <code class="i">IconButton</code> in toolbars. A button with <code class="i">onPressed: null</code> is disabled.</p></div></div>
+
+      <div class="widget"><header><h4>TextField</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Lets the user type. Full coverage in Chapter 9.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>const TextField(
+  decoration: InputDecoration(
+    labelText: 'Your name',
+    border: OutlineInputBorder(),
+  ),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> any time you need free text input.</p></div></div>
+
+      <div class="widget"><header><h4>Row, Column, Center, Padding</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> <code class="i">Row</code> lays children side by side, <code class="i">Column</code> stacks them vertically, <code class="i">Center</code> centers one child, <code class="i">Padding</code> adds space around a child.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Padding(
+  padding: const EdgeInsets.all(16),
+  child: Column(
+    children: const [
+      Text('First'),
+      SizedBox(height: 8),
+      Text('Second'),
+    ],
+  ),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> these are the backbone of almost every layout. See Chapter 4.</p></div></div>
+
+      <div class="widget"><header><h4>Expanded and Flexible</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Inside a Row or Column, they decide how children share leftover space.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Row(
+  children: [
+    const Icon(Icons.school),
+    const SizedBox(width: 8),
+    Expanded(child: Text('A very long course title that wraps nicely')),
+  ],
+)</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">Expanded</code> to fill all remaining space; <code class="i">Flexible</code> when the child may be smaller.</p></div></div>
+
+      <div class="widget"><header><h4>Stack and Positioned</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Stack widgets on top of each other, like papers on a desk.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Stack(
+  children: [
+    Image.network('https://picsum.photos/300/160'),
+    const Positioned(
+      bottom: 8,
+      left: 8,
+      child: Text('Caption', style: TextStyle(color: Colors.white)),
+    ),
+  ],
+)</code></pre></div>
+        <p><span class="label">Use it:</span> badges on images, text over pictures, floating labels.</p></div></div>
+
+      <div class="widget"><header><h4>ListView and GridView</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> Scrollable lists and grids.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>ListView.builder(
+  itemCount: courses.length,
+  itemBuilder: (context, index) {
+    return ListTile(title: Text(courses[index]));
+  },
+)
+
+GridView.count(
+  crossAxisCount: 2,
+  children: const [Text('A'), Text('B'), Text('C'), Text('D')],
+)</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">ListView.builder</code> builds only items on screen, so it is great for long lists.</p></div></div>
+
+      <div class="widget"><header><h4>Card and ListTile</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> <code class="i">Card</code> is a raised, rounded panel. <code class="i">ListTile</code> is a ready-made row with icon, title and subtitle.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>const Card(
+  child: ListTile(
+    leading: Icon(Icons.book),
+    title: Text('Flutter Basics'),
+    subtitle: Text('12 lessons'),
+    trailing: Icon(Icons.chevron_right),
+  ),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> for list items, settings rows, and course entries.</p></div></div>
+
+      <div class="widget"><header><h4>AppBar, Drawer, BottomNavigationBar</h4></header><div class="body">
+        <p><span class="label">Purpose:</span> The top bar, the slide-out side menu, and the bottom tabs. All are slots on a <code class="i">Scaffold</code>.</p>
+        <div class="code" style="margin:0 -18px 12px;border-radius:0"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Scaffold(
+  appBar: AppBar(title: const Text('Courses')),
+  drawer: const Drawer(child: Center(child: Text('Menu'))),
+  bottomNavigationBar: BottomNavigationBar(
+    items: const [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+    ],
+  ),
+)</code></pre></div>
+        <p><span class="label">Use it:</span> <code class="i">BottomNavigationBar</code> for 2 to 5 main areas; a <code class="i">Drawer</code> for extra links.</p></div></div>
+
+      <div class="callout note"><span class="tag">Material 3</span><p>Newer Flutter also offers <code class="i">NavigationBar</code>, a modern replacement for <code class="i">BottomNavigationBar</code>. The ideas are identical, so what you learn here still applies.</p></div>
+    </section>
+
+    <!-- ================= 4 ================= -->
+    <section class="chapter" id="s4" data-title="Layout Basics">
+      <p class="chapter-label">Chapter 4</p>
+      <h2 class="title">Layout Basics</h2>
+      <p class="goal"><strong>By the end:</strong> you can arrange widgets confidently and style boxes using Flutter's own tools.</p>
+
+      <div class="callout warn"><span class="tag">Not like CSS</span><p>Flutter has <strong>no CSS</strong>. Backgrounds, borders, rounded corners and shadows are set with a <code class="i">BoxDecoration</code>. <code class="i">Expanded</code> and <code class="i">Flexible</code> are <em>widgets</em> you wrap around a child, not properties like <code class="i">flex: 1</code> in CSS.</p></div>
+
+      <h3 id="s4-rowcol">Row and Column</h3>
+      <p>A <code class="i">Row</code> lines things up left to right. A <code class="i">Column</code> stacks them top to bottom. Think of a shelf: a row is one shelf, a column is the whole bookcase.</p>
+      <div class="diagram">
+        <div class="cards" style="margin:0">
+          <div><div class="phone"><div class="ab">Row</div><div class="bd"><div class="demo-row"><div class="mini hl">A</div><div class="mini hl">B</div><div class="mini hl">C</div></div></div></div></div>
+          <div><div class="phone"><div class="ab">Column</div><div class="bd"><div class="mini hl">A</div><div class="mini hl">B</div><div class="mini hl">C</div></div></div></div>
+        </div>
+        <div class="cap">Row = horizontal. Column = vertical.</div>
+      </div>
+
+      <h3 id="s4-align">Center and alignment</h3>
+      <p>Every Row and Column has a <strong>main axis</strong> (the direction it lays out) and a <strong>cross axis</strong> (the other direction). You control both:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween, // along the row
+  crossAxisAlignment: CrossAxisAlignment.center,     // up and down
+  children: const [
+    Text('Left'),
+    Text('Right'),
+  ],
+)</code></pre></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>MainAxisAlignment</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><code class="i">start</code></td><td>Pack children at the start</td></tr>
+          <tr><td><code class="i">center</code></td><td>Pack children in the middle</td></tr>
+          <tr><td><code class="i">spaceBetween</code></td><td>First and last touch the edges; equal gaps between</td></tr>
+          <tr><td><code class="i">spaceEvenly</code></td><td>Equal space everywhere, including the edges</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="s4-size">Width and height</h3>
+      <p>Use <code class="i">SizedBox</code> or <code class="i">Container</code> to give a size. Prefer flexible sizing (Expanded, constraints) over fixed numbers where you can. Chapter 13 explains why.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>SizedBox(
+  width: double.infinity, // as wide as the parent allows
+  height: 48,
+  child: ElevatedButton(onPressed: () {}, child: const Text('Continue')),
+)</code></pre></div>
+
+      <h3 id="s4-spacing">Padding and margin</h3>
+      <p><strong>Padding</strong> is the space <em>inside</em> a box, like the cushioning in a gift box. <strong>Margin</strong> is the space <em>outside</em>, like the gap between two boxes on a shelf.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Container(
+  margin: const EdgeInsets.all(16),                 // outside
+  padding: const EdgeInsets.symmetric(              // inside
+    horizontal: 20,
+    vertical: 12,
+  ),
+  color: Colors.blue.shade50,
+  child: const Text('Cozy box'),
+)</code></pre></div>
+      <p>Other options: <code class="i">EdgeInsets.only(left: 8)</code>, <code class="i">EdgeInsets.fromLTRB(8, 4, 8, 4)</code>.</p>
+
+      <h3 id="s4-decoration">Colors, borders, radius and shadows</h3>
+      <p>All of these live in one place: <code class="i">BoxDecoration</code>.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.white,                                  // background
+    border: Border.all(color: Colors.grey.shade300),     // border
+    borderRadius: BorderRadius.circular(12),             // rounded corners
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 8,
+        offset: Offset(0, 2),                            // shadow position
+      ),
+    ],
+  ),
+  child: const Text('A styled box'),
+)</code></pre></div>
+      <div class="callout danger"><span class="tag">Common trap</span><p>If you set <code class="i">color</code> on the <code class="i">Container</code> <em>and</em> a <code class="i">decoration</code>, Flutter throws an error. When using <code class="i">decoration</code>, put the color <em>inside</em> it.</p></div>
+      <p><strong>Elevation</strong> is the Material way to show height. Widgets like <code class="i">Card</code> and <code class="i">ElevatedButton</code> have an <code class="i">elevation</code> property that draws a shadow for you:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Card(
+  elevation: 2,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  child: const Padding(padding: EdgeInsets.all(16), child: Text('Raised')),
+)</code></pre></div>
+
+      <h3 id="s4-constraints">Constraints and responsive sizing</h3>
+      <p>Flutter's golden rule: <strong>constraints go down, sizes go up, parent sets position.</strong> A parent tells a child "you may be between this and this wide". The child picks a size in that range and reports back.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>// Limit content width on big screens
+Center(
+  child: ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 600),
+    child: const Text('Readable on tablets and phones'),
+  ),
+)
+
+// React to the available space
+LayoutBuilder(
+  builder: (context, constraints) {
+    final isWide = constraints.maxWidth &gt; 700;
+    return isWide ? const Text('Wide layout') : const Text('Narrow layout');
+  },
+)
+
+// Or read the screen size
+final width = MediaQuery.of(context).size.width;</code></pre></div>
+
+      <h3 id="s4-flex">Expanded, Flexible and Flex</h3>
+      <p>Imagine a pizza shared among friends. <code class="i">Expanded</code> says "I take whatever slice is left". The <code class="i">flex</code> number says how many parts each friend gets.</p>
+      <div class="diagram">
+        <div class="phone" style="width:260px"><div class="ab">Row</div><div class="bd"><div class="demo-row"><div class="mini">Icon</div><div class="mini hl w2">Expanded (flex: 2)</div><div class="mini hl">Expanded (flex: 1)</div></div></div></div>
+        <div class="cap">Fixed icon first, then leftover space split 2 : 1.</div>
+      </div>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Row(
+  children: [
+    const Icon(Icons.star),
+    Expanded(flex: 2, child: Container(height: 40, color: Colors.blue)),
+    Expanded(flex: 1, child: Container(height: 40, color: Colors.lightBlue)),
+  ],
+)</code></pre></div>
+      <ul class="list">
+        <li><code class="i">Expanded</code> forces the child to fill its share.</li>
+        <li><code class="i">Flexible</code> lets the child take up to its share but be smaller (<code class="i">fit: FlexFit.loose</code>).</li>
+        <li><code class="i">Flex</code> is the parent class of Row and Column. You rarely use it directly.</li>
+      </ul>
+
+      <h3 id="s4-images">Images, aspect ratios and fit</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>ClipRRect(
+  borderRadius: BorderRadius.circular(12),
+  child: AspectRatio(
+    aspectRatio: 16 / 9,
+    child: Image.network(
+      'https://picsum.photos/640/360',
+      fit: BoxFit.cover,
+    ),
+  ),
+)</code></pre></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>BoxFit</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code class="i">cover</code></td><td>Fills the box, crops the extra (most common)</td></tr>
+          <tr><td><code class="i">contain</code></td><td>Shows the whole image, may leave empty space</td></tr>
+          <tr><td><code class="i">fill</code></td><td>Stretches to fit (can distort)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="s4-hierarchy">Spacing and visual hierarchy</h3>
+      <p>Make the most important thing the biggest or boldest. Group related items closely and leave larger gaps between groups. Pick a spacing scale (such as 8, 16, 24, 32) and stick to it.</p>
+    </section>
+
+    <!-- ================= 5 ================= -->
+    <section class="chapter" id="s5" data-title="Build Your First App">
+      <p class="chapter-label">Chapter 5</p>
+      <h2 class="title">Build Your First Simple App</h2>
+      <p class="goal"><strong>By the end:</strong> you have a working student profile screen with a card, input, buttons and a course list.</p>
+
+      <div class="diagram">
+        <div class="phone" style="width:230px"><div class="ab">Student Profile</div><div class="bd">
+          <div class="demo-row" style="align-items:center"><div class="mini hl" style="border-radius:50%;width:38px;flex:none">AR</div><div class="mini" style="text-align:left;flex:1"><b>Asha Rao</b><br>Computer Science</div></div>
+          <div class="mini">Enter your name (input)</div>
+          <div class="demo-row"><div class="mini hl">Enroll</div><div class="mini">Reset</div></div>
+          <div class="mini" style="text-align:left">📘 Flutter Basics</div>
+          <div class="mini" style="text-align:left">📘 Dart Essentials</div>
+        </div></div>
+        <div class="cap">The screen we are building.</div>
+      </div>
+
+      <h3 id="s5-setup">Step 1: Create the project</h3>
+      <div class="code other"><div class="bar"><span class="lang">Terminal</span><button class="copy" type="button">Copy</button></div><pre><code>flutter create student_app
+cd student_app
+flutter run</code></pre></div>
+      <p>Open <code class="i">lib/main.dart</code>, delete everything inside, and follow the next steps.</p>
+
+      <h3 id="s5-main">Step 2: Start the app</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const StudentApp());
+}
+
+class StudentApp extends StatelessWidget {
+  const StudentApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Student App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorSchemeSeed: const Color(0xFF0553B1),
+        useMaterial3: true,
+      ),
+      home: const ProfilePage(),
+    );
+  }
+}</code></pre></div>
+      <div class="explain"><h4>Line by line</h4><ul>
+        <li><code class="i">import</code> brings in Flutter's Material widgets.</li>
+        <li><code class="i">runApp</code> starts the app with <code class="i">StudentApp</code> at the top.</li>
+        <li><code class="i">colorSchemeSeed</code> builds a matching color palette from one blue.</li>
+        <li><code class="i">home</code> is the first screen that opens.</li>
+      </ul></div>
+
+      <h3 id="s5-page">Step 3: The profile page</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  final List&lt;String&gt; courses = const [
+    'Flutter Basics',
+    'Dart Essentials',
+    'UI Design 101',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Student Profile')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const StudentCard(),
+          const SizedBox(height: 16),
+          const TextField(
+            decoration: InputDecoration(
+              labelText: 'Your name',
+              prefixIcon: Icon(Icons.person),
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Enroll'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('Reset'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Text('My courses', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          for (final course in courses)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.menu_book),
+                title: Text(course),
+                trailing: const Icon(Icons.chevron_right),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}</code></pre></div>
+      <div class="explain"><h4>Line by line</h4><ul>
+        <li><code class="i">ListView</code> makes the page scrollable so nothing overflows on small screens.</li>
+        <li><code class="i">padding: EdgeInsets.all(16)</code> keeps content away from the screen edges.</li>
+        <li>The <code class="i">Row</code> holds two buttons; each is wrapped in <code class="i">Expanded</code> so they share the width equally.</li>
+        <li><code class="i">Theme.of(context).textTheme.titleLarge</code> uses the app's standard heading style.</li>
+        <li><code class="i">for (final course in courses)</code> creates one <code class="i">Card</code> per item right inside the list.</li>
+      </ul></div>
+
+      <h3 id="s5-card">Step 4: The student card</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class StudentCard extends StatelessWidget {
+  const StudentCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 32,
+              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=47'),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Asha Rao',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.school, size: 16),
+                      SizedBox(width: 4),
+                      Text('Computer Science'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.email, size: 16),
+                      SizedBox(width: 4),
+                      Text('asha@example.com'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></div>
+      <div class="explain"><h4>Line by line</h4><ul>
+        <li><code class="i">CircleAvatar</code> shows the profile picture in a circle.</li>
+        <li>The outer <code class="i">Row</code> puts the photo on the left and details on the right.</li>
+        <li><code class="i">Expanded</code> lets the text column use the remaining width and wrap if needed.</li>
+        <li><code class="i">CrossAxisAlignment.start</code> aligns text to the left edge.</li>
+        <li>Spacing values (4, 16) are repeated, which keeps things consistent.</li>
+      </ul></div>
+      <div class="callout tip"><span class="tag">Try it</span><p>Change the seed color, the card's radius, or add a third course. Save and watch hot reload apply it at once.</p></div>
+    </section>
+
+    <!-- ================= 6 ================= -->
+    <section class="chapter" id="s6" data-title="Understanding StatefulWidget">
+      <p class="chapter-label">Chapter 6</p>
+      <h2 class="title">Understanding StatefulWidget</h2>
+      <p class="goal"><strong>By the end:</strong> you can build screens that react to taps and typing.</p>
+
+      <h3 id="s6-state">What is state?</h3>
+      <p><strong>State is data that can change while the app runs.</strong> A counter number, whether a switch is on, the text a user typed: all state. A lamp is a good analogy: the lamp is the widget, and "on or off" is its state.</p>
+
+      <h3 id="s6-flow">How the UI updates</h3>
+      <div class="diagram">
+        <div class="steps">
+          <div class="node a"><b>User action</b><small>taps a button</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>State change</b><small>inside setState()</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><b>Rebuild</b><small>build() runs again</small></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="node a"><b>New UI</b><small>screen shows new data</small></div>
+        </div>
+        <div class="cap">Change state inside <code class="i">setState()</code>, and Flutter redraws for you.</div>
+      </div>
+
+      <h3 id="s6-counter">Example 1: a counter</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class CounterPage extends StatefulWidget {
+  const CounterPage({super.key});
+
+  @override
+  State&lt;CounterPage&gt; createState() =&gt; _CounterPageState();
+}
+
+class _CounterPageState extends State&lt;CounterPage&gt; {
+  int _count = 0;
+
+  void _increment() {
+    setState(() {
+      _count++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter')),
+      body: Center(
+        child: Text('Tapped $_count times',
+            style: Theme.of(context).textTheme.headlineMedium),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _increment,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}</code></pre></div>
+      <div class="explain"><h4>In plain English</h4><ul>
+        <li>A stateful widget is <strong>two classes</strong>: the widget, and a <code class="i">State</code> class that holds the data.</li>
+        <li><code class="i">_count</code> is the state. The underscore makes it private to this file.</li>
+        <li><code class="i">setState(() { ... })</code> changes the data <em>and</em> tells Flutter "please rebuild".</li>
+        <li>Without <code class="i">setState</code>, the number changes in memory but the screen stays the same.</li>
+      </ul></div>
+
+      <h3 id="s6-toggle">Example 2: show or hide content</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class _DetailsState extends State&lt;Details&gt; {
+  bool _showMore = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('Flutter is a UI toolkit.'),
+        if (_showMore)
+          const Text('It uses Dart and draws its own widgets.'),
+        TextButton(
+          onPressed: () =&gt; setState(() =&gt; _showMore = !_showMore),
+          child: Text(_showMore ? 'Show less' : 'Show more'),
+        ),
+      ],
+    );
+  }
+}</code></pre></div>
+      <p>The <code class="i">if</code> inside a list adds the widget only when the condition is true. The <code class="i">!</code> flips true to false and back.</p>
+
+      <h3 id="s6-input">Example 3: handling simple input</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class _GreeterState extends State&lt;Greeter&gt; {
+  String _name = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          decoration: const InputDecoration(labelText: 'Your name'),
+          onChanged: (value) =&gt; setState(() =&gt; _name = value),
+        ),
+        const SizedBox(height: 12),
+        Text(_name.isEmpty ? 'Type your name above' : 'Hello, $_name!'),
+      ],
+    );
+  }
+}</code></pre></div>
+      <p><code class="i">onChanged</code> runs on every keystroke, so the greeting updates as you type.</p>
+      <div class="callout note"><span class="tag">Rule of thumb</span><p>Keep <code class="i">setState</code> small and call it only when something visible changes. Do slow work (like network calls) <em>outside</em> it, then call <code class="i">setState</code> with the result.</p></div>
+    </section>
+
+    <!-- ================= 7 ================= -->
+    <section class="chapter" id="s7" data-title="Navigation and Screens">
+      <p class="chapter-label">Chapter 7</p>
+      <h2 class="title">Navigation and Multiple Screens</h2>
+      <p class="goal"><strong>By the end:</strong> your app has Home, Courses and Profile screens, with data passed between them.</p>
+
+      <p>In Flutter, screens are called <strong>routes</strong>. The <code class="i">Navigator</code> keeps them in a <strong>stack</strong> like a pile of cards: <em>push</em> puts a new screen on top, <em>pop</em> removes it and reveals the previous one.</p>
+
+      <div class="diagram">
+        <div class="steps">
+          <div class="node"><b>Home</b><small>bottom of stack</small></div><span class="arrow" aria-hidden="true">push →</span>
+          <div class="node"><b>Courses</b><small>on top</small></div><span class="arrow" aria-hidden="true">push →</span>
+          <div class="node a"><b>Course Detail</b><small>visible now</small></div>
+        </div>
+        <div class="cap">Back button or <code class="i">Navigator.pop()</code> removes the top screen.</div>
+      </div>
+
+      <h3 id="s7-basic">Basic push and pop</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>// Go to a new screen
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) =&gt; const CoursesScreen()),
+);
+
+// Go back
+Navigator.pop(context);</code></pre></div>
+
+      <h3 id="s7-named">Named routes</h3>
+      <p>Named routes give each screen a short address. Register them once in <code class="i">MaterialApp</code>:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>MaterialApp(
+  initialRoute: '/',
+  routes: {
+    '/': (context) =&gt; const MainShell(),
+    '/detail': (context) =&gt; const CourseDetailScreen(),
+  },
+)
+
+// Elsewhere:
+Navigator.pushNamed(context, '/detail', arguments: 'Flutter Basics');</code></pre></div>
+
+      <h3 id="s7-data">Passing data between screens</h3>
+      <p>Two simple ways. The easiest is a constructor parameter:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class CourseDetailScreen extends StatelessWidget {
+  const CourseDetailScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Read what was sent through "arguments"
+    final title = ModalRoute.of(context)!.settings.arguments as String;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title)), // back arrow appears automatically
+      body: Center(child: Text('Details for $title')),
+    );
+  }
+}</code></pre></div>
+      <p>The second option is to send data back when popping: <code class="i">Navigator.pop(context, 'result')</code>, and read it with <code class="i">final result = await Navigator.push(...)</code>.</p>
+
+      <h3 id="s7-example">Example: Home, Courses, Profile with bottom tabs and a drawer</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class MainShell extends StatefulWidget {
+  const MainShell({super.key});
+
+  @override
+  State&lt;MainShell&gt; createState() =&gt; _MainShellState();
+}
+
+class _MainShellState extends State&lt;MainShell&gt; {
+  int _index = 0;
+
+  final _pages = const [HomeTab(), CoursesTab(), ProfileTab()];
+  final _titles = const ['Home', 'Courses', 'Profile'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(_titles[_index])),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const DrawerHeader(child: Text('Student App')),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () =&gt; Navigator.pop(context), // closes the drawer
+            ),
+          ],
+        ),
+      ),
+      body: _pages[_index],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _index,
+        onDestinationSelected: (i) =&gt; setState(() =&gt; _index = i),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.menu_book), label: 'Courses'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
+
+class HomeTab extends StatelessWidget {
+  const HomeTab({super.key});
+  @override
+  Widget build(BuildContext context) =&gt;
+      const Center(child: Text('Welcome back!'));
+}
+
+class CoursesTab extends StatelessWidget {
+  const CoursesTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const courses = ['Flutter Basics', 'Dart Essentials', 'UI Design 101'];
+    return ListView(
+      children: [
+        for (final c in courses)
+          ListTile(
+            title: Text(c),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () =&gt; Navigator.pushNamed(context, '/detail', arguments: c),
+          ),
+      ],
+    );
+  }
+}
+
+class ProfileTab extends StatelessWidget {
+  const ProfileTab({super.key});
+  @override
+  Widget build(BuildContext context) =&gt;
+      const Center(child: Text('Asha Rao'));
+}</code></pre></div>
+      <div class="explain"><h4>How it works</h4><ul>
+        <li><code class="i">_index</code> is state: it remembers which tab is selected.</li>
+        <li>Tapping a tab calls <code class="i">setState</code>, so <code class="i">body</code> swaps to another page.</li>
+        <li>Tapping a course uses <code class="i">pushNamed</code> to open the detail screen and sends the course name.</li>
+        <li>Flutter adds the <strong>back arrow</strong> to the detail screen's AppBar automatically.</li>
+      </ul></div>
+      <div class="callout note"><span class="tag">Going further</span><p>For bigger apps, many developers use the <code class="i">go_router</code> package, which supports web URLs and deep links. Learn <code class="i">Navigator</code> first; the ideas carry over.</p></div>
+    </section>
+
+    <!-- ================= 8 ================= -->
+    <section class="chapter" id="s8" data-title="Building a Good UI">
+      <p class="chapter-label">Chapter 8</p>
+      <h2 class="title">Building a Good UI</h2>
+      <p class="goal"><strong>By the end:</strong> you can turn a plain screen into a clear, friendly, accessible one.</p>
+
+      <div class="cards">
+        <div class="card"><span class="k">HIERARCHY</span><h4>Guide the eye</h4><p>Biggest and boldest = most important. Make the main action obvious.</p></div>
+        <div class="card"><span class="k">TYPOGRAPHY</span><h4>Limit styles</h4><p>Use 3 or 4 text sizes. Use <code class="i">Theme.of(context).textTheme</code> instead of random numbers.</p></div>
+        <div class="card"><span class="k">SPACING</span><h4>Use a scale</h4><p>8, 16, 24, 32. Align things to the same left edge.</p></div>
+        <div class="card"><span class="k">COLOR</span><h4>Contrast first</h4><p>Pick one main color. Text must be easy to read against its background.</p></div>
+        <div class="card"><span class="k">CONSISTENCY</span><h4>Same = same</h4><p>All buttons share a shape; all cards share a radius.</p></div>
+        <div class="card"><span class="k">RESPONSIVE</span><h4>Any screen</h4><p>Use Expanded, ListView and max widths instead of fixed sizes.</p></div>
+      </div>
+
+      <h3 id="s8-before">Before and after</h3>
+      <div class="diagram">
+        <div class="ba">
+          <div class="before"><h4>Before: plain and cramped</h4><div class="phone"><div class="bd">
+            <div>Courses</div><div>Flutter Basics</div><div>Dart Essentials</div><div>button</div></div></div></div>
+          <div class="after"><h4>After: clear and spaced</h4><div class="phone"><div class="ab">Courses</div><div class="bd">
+            <div class="mini"><b>Flutter Basics</b><br>12 lessons</div>
+            <div class="mini"><b>Dart Essentials</b><br>8 lessons</div>
+            <div class="mini hl">Start learning</div></div></div></div>
+        </div>
+      </div>
+      <h4>Before</h4>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Column(
+  children: [
+    Text('Courses'),
+    Text('Flutter Basics'),
+    Text('Dart Essentials'),
+    ElevatedButton(onPressed: () {}, child: Text('button')),
+  ],
+)</code></pre></div>
+      <h4>After</h4>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Padding(
+  padding: const EdgeInsets.all(16),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('Courses', style: Theme.of(context).textTheme.headlineSmall),
+      const SizedBox(height: 16),
+      const CourseCard(title: 'Flutter Basics', lessons: 12),
+      const CourseCard(title: 'Dart Essentials', lessons: 8),
+      const SizedBox(height: 16),
+      SizedBox(
+        width: double.infinity,
+        height: 48,
+        child: FilledButton(
+          onPressed: () {},
+          child: const Text('Start learning'),
+        ),
+      ),
+    ],
+  ),
+)</code></pre></div>
+      <p>What changed: a clear heading style, consistent padding, reusable cards, a clear button label, and a full-width, 48-pixel-tall touch target.</p>
+
+      <h3 id="s8-states">Loading, empty and error states</h3>
+      <p>Every screen that loads data has at least four situations: <strong>loading</strong>, <strong>success</strong>, <strong>empty</strong> and <strong>error</strong>. Design all of them.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>if (isLoading)
+  const Center(child: CircularProgressIndicator())
+else if (errorMessage != null)
+  Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.error_outline, size: 40),
+        const SizedBox(height: 8),
+        Text(errorMessage!),
+        TextButton(onPressed: retry, child: const Text('Try again')),
+      ],
+    ),
+  )
+else if (items.isEmpty)
+  const Center(child: Text('No courses yet. Check back soon!'))
+else
+  ListView(children: [/* show items */])</code></pre></div>
+
+      <h3 id="s8-a11y">Accessible text and touch targets</h3>
+      <ul class="list">
+        <li>Keep tappable areas at least <strong>48 × 48</strong> logical pixels. <code class="i">IconButton</code> already does this.</li>
+        <li>Do not use very light gray text on white.</li>
+        <li>Add <code class="i">tooltip</code> to icon buttons and <code class="i">semanticLabel</code> to important images. Screen readers use them.</li>
+        <li>Never rely on color alone to show errors; add an icon or text too.</li>
+        <li>Respect larger system font sizes: avoid fixed heights on text containers.</li>
+      </ul>
+
+      <h3 id="s8-reuse">Reusable widgets</h3>
+      <p>If you copy the same layout twice, turn it into a widget.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class CourseCard extends StatelessWidget {
+  const CourseCard({super.key, required this.title, required this.lessons});
+
+  final String title;
+  final int lessons;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        subtitle: Text('$lessons lessons'),
+        trailing: const Icon(Icons.chevron_right),
+      ),
+    );
+  }
+}</code></pre></div>
+    </section>
+
+    <!-- ================= 9 ================= -->
+    <section class="chapter" id="s9" data-title="Forms and User Input">
+      <p class="chapter-label">Chapter 9</p>
+      <h2 class="title">Forms and User Input</h2>
+      <p class="goal"><strong>By the end:</strong> you can build a validated login and registration form.</p>
+
+      <h3 id="s9-fields">TextField vs TextFormField</h3>
+      <p><code class="i">TextField</code> is a simple input. <code class="i">TextFormField</code> is the same thing but works inside a <code class="i">Form</code>, so it supports <strong>validation</strong>. Use <code class="i">TextFormField</code> when you have a form.</p>
+
+      <h3 id="s9-controllers">Controllers</h3>
+      <p>A <code class="i">TextEditingController</code> lets you read, set or clear the text. Always <code class="i">dispose</code> it to free memory.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>final _nameController = TextEditingController();
+
+@override
+void dispose() {
+  _nameController.dispose();
+  super.dispose();
+}
+
+// Later:
+final text = _nameController.text;
+_nameController.clear();</code></pre></div>
+
+      <h3 id="s9-validation">Forms and validation</h3>
+      <p>A <code class="i">GlobalKey&lt;FormState&gt;</code> lets you ask the whole form "is everything valid?". A validator returns an error message, or <code class="i">null</code> if the value is fine.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
+
+  @override
+  State&lt;LoginForm&gt; createState() =&gt; _LoginFormState();
+}
+
+class _LoginFormState extends State&lt;LoginForm&gt; {
+  final _formKey = GlobalKey&lt;FormState&gt;();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  bool _hidePassword = true;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Logging in...')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Please enter your email';
+                if (!value.contains('@')) return 'That does not look like an email';
+                return null; // null means valid
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _password,
+              obscureText: _hidePassword,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  tooltip: 'Show or hide password',
+                  icon: Icon(_hidePassword ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () =&gt; setState(() =&gt; _hidePassword = !_hidePassword),
+                ),
+              ),
+              validator: (value) =&gt;
+                  (value == null || value.length &lt; 6) ? 'Use at least 6 characters' : null,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: FilledButton(onPressed: _submit, child: const Text('Log in')),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre></div>
+      <div class="explain"><h4>In plain English</h4><ul>
+        <li><code class="i">validate()</code> runs every validator and shows red messages under failing fields.</li>
+        <li><code class="i">obscureText</code> hides characters for passwords.</li>
+        <li><code class="i">SnackBar</code> is a small message shown at the bottom.</li>
+      </ul></div>
+
+      <h3 id="s9-more">Dropdowns and checkboxes</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>String? _level;
+bool _agreed = false;
+
+// inside build():
+DropdownButtonFormField&lt;String&gt;(
+  value: _level,
+  decoration: const InputDecoration(
+    labelText: 'Your level',
+    border: OutlineInputBorder(),
+  ),
+  items: const [
+    DropdownMenuItem(value: 'beginner', child: Text('Beginner')),
+    DropdownMenuItem(value: 'intermediate', child: Text('Intermediate')),
+  ],
+  onChanged: (value) =&gt; setState(() =&gt; _level = value),
+  validator: (value) =&gt; value == null ? 'Please choose a level' : null,
+),
+CheckboxListTile(
+  value: _agreed,
+  onChanged: (v) =&gt; setState(() =&gt; _agreed = v ?? false),
+  title: const Text('I agree to the terms'),
+  controlAffinity: ListTileControlAffinity.leading,
+),</code></pre></div>
+      <div class="callout note"><span class="tag">Version note</span><p>In very recent Flutter versions, the dropdown's <code class="i">value</code> parameter is being renamed <code class="i">initialValue</code>. If your editor shows a deprecation hint, follow it.</p></div>
+
+      <h3 id="s9-design">Login vs registration design</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th></th><th>Login</th><th>Registration</th></tr></thead>
+        <tbody>
+          <tr><td>Fields</td><td>Email, password</td><td>Name, email, password, confirm password</td></tr>
+          <tr><td>Main button</td><td>"Log in"</td><td>"Create account"</td></tr>
+          <tr><td>Extra link</td><td>"Forgot password?"</td><td>"Already have an account?"</td></tr>
+        </tbody>
+      </table></div>
+      <p>Keep forms short, label every field, show errors beside the field that failed, and use the right <code class="i">keyboardType</code>.</p>
+    </section>
+
+    <!-- ================= 10 ================= -->
+    <section class="chapter" id="s10" data-title="APIs and Backend Integration">
+      <p class="chapter-label">Chapter 10</p>
+      <h2 class="title">APIs and Backend Integration</h2>
+      <p class="goal"><strong>By the end:</strong> you can fetch JSON from an API and show loading, success and error states.</p>
+
+      <h3 id="s10-api">What is an API?</h3>
+      <p>An <strong>API</strong> (Application Programming Interface) is a menu of requests your app can make to a server. You ask politely at a URL; the server answers with data.</p>
+
+      <h3 id="s10-http">HTTP requests</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Method</th><th>Meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><code class="i">GET</code></td><td>Read data</td><td><code class="i">GET /courses</code></td></tr>
+          <tr><td><code class="i">POST</code></td><td>Create new data</td><td><code class="i">POST /courses</code></td></tr>
+          <tr><td><code class="i">PUT</code></td><td>Update existing data</td><td><code class="i">PUT /courses/3</code></td></tr>
+          <tr><td><code class="i">DELETE</code></td><td>Remove data</td><td><code class="i">DELETE /courses/3</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Responses come with a <strong>status code</strong>: <code class="i">200</code> OK, <code class="i">201</code> created, <code class="i">400</code> bad request, <code class="i">401</code> not logged in, <code class="i">404</code> not found, <code class="i">500</code> server error.</p>
+
+      <h3 id="s10-json">JSON</h3>
+      <p>JSON is a text format for data, made of key-value pairs and lists. APIs usually speak JSON.</p>
+      <div class="code other"><div class="bar"><span class="lang">JSON</span><button class="copy" type="button">Copy</button></div><pre><code>{
+  "id": 1,
+  "title": "Flutter Basics",
+  "lessons": 12
+}</code></pre></div>
+      <p>In Dart, <code class="i">jsonDecode</code> turns that text into a <code class="i">Map</code> (or a <code class="i">List</code> of Maps), which you convert into your own class.</p>
+
+      <h3 id="s10-fetch">Fetching and showing API data</h3>
+      <p>First, add the <code class="i">http</code> package:</p>
+      <div class="code other"><div class="bar"><span class="lang">Terminal</span><button class="copy" type="button">Copy</button></div><pre><code>flutter pub add http</code></pre></div>
+      <div class="callout warn"><span class="tag">Permissions</span><p>On <strong>Android</strong>, add <code class="i">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;</code> to <code class="i">android/app/src/main/AndroidManifest.xml</code> for release builds. On <strong>macOS</strong>, enable the "outgoing network" entitlement.</p></div>
+
+      <p>We will use JSONPlaceholder, a free fake API that returns sample posts.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class Post {
+  final int id;
+  final String title;
+  final String body;
+
+  const Post({required this.id, required this.title, required this.body});
+
+  factory Post.fromJson(Map&lt;String, dynamic&gt; json) {
+    return Post(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      body: json['body'] as String,
+    );
+  }
+}
+
+Future&lt;List&lt;Post&gt;&gt; fetchPosts() async {
+  final response = await http.get(
+    Uri.parse('https://jsonplaceholder.typicode.com/posts?_limit=10'),
+  );
+
+  if (response.statusCode == 200) {
+    final List&lt;dynamic&gt; data = jsonDecode(response.body);
+    return data.map((item) =&gt; Post.fromJson(item)).toList();
+  } else {
+    throw Exception('Server error: ${response.statusCode}');
+  }
+}</code></pre></div>
+      <div class="explain"><h4>In plain English</h4><ul>
+        <li><code class="i">Post</code> is a Dart class that mirrors one JSON object.</li>
+        <li><code class="i">fromJson</code> converts a Map into a <code class="i">Post</code>.</li>
+        <li><code class="i">Future</code> means "the answer arrives later". <code class="i">await</code> waits for it without freezing the UI.</li>
+        <li>We check <code class="i">statusCode</code> and throw an error if it is not 200.</li>
+      </ul></div>
+
+      <h3 id="s10-states">Loading, success and error states</h3>
+      <p><code class="i">FutureBuilder</code> rebuilds the UI as the future moves from waiting to done:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class PostsPage extends StatefulWidget {
+  const PostsPage({super.key});
+
+  @override
+  State&lt;PostsPage&gt; createState() =&gt; _PostsPageState();
+}
+
+class _PostsPageState extends State&lt;PostsPage&gt; {
+  late Future&lt;List&lt;Post&gt;&gt; _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = fetchPosts(); // start once, not on every rebuild
+  }
+
+  void _retry() {
+    setState(() {
+      _future = fetchPosts();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Posts')),
+      body: FutureBuilder&lt;List&lt;Post&gt;&gt;(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Something went wrong.'),
+                  TextButton(onPressed: _retry, child: const Text('Try again')),
+                ],
+              ),
+            );
+          }
+          final posts = snapshot.data ?? [];
+          if (posts.isEmpty) {
+            return const Center(child: Text('No posts found.'));
+          }
+          return ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return ListTile(
+                title: Text(post.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+                subtitle: Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}</code></pre></div>
+      <div class="callout danger"><span class="tag">Mistake to avoid</span><p>Do not call <code class="i">fetchPosts()</code> directly inside <code class="i">build</code>. It would re-send the request every time the screen rebuilds. Store the future in <code class="i">initState</code>.</p></div>
+
+      <h3 id="s10-write">Sending data: POST</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Future&lt;void&gt; createPost(String title, String body) async {
+  final response = await http.post(
+    Uri.parse('https://jsonplaceholder.typicode.com/posts'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'title': title, 'body': body, 'userId': 1}),
+  );
+
+  if (response.statusCode != 201) {
+    throw Exception('Could not create post');
+  }
+}</code></pre></div>
+      <p>PUT and DELETE work the same way with <code class="i">http.put</code> and <code class="i">http.delete</code>.</p>
+
+      <h3 id="s10-auth">Basic authentication concepts</h3>
+      <ol class="list">
+        <li>The user sends email and password to <code class="i">POST /login</code>.</li>
+        <li>The server checks them and returns a <strong>token</strong> (like a wristband at a concert).</li>
+        <li>The app sends the token with later requests.</li>
+        <li>The server verifies the token before returning private data.</li>
+      </ol>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>final response = await http.get(
+  Uri.parse('https://api.example.com/me'),
+  headers: {'Authorization': 'Bearer $token'},
+);</code></pre></div>
+      <div class="callout tip"><span class="tag">Storing tokens</span><p>Save tokens with a secure storage package such as <code class="i">flutter_secure_storage</code>, not in plain text files. Always use <strong>HTTPS</strong>.</p></div>
+    </section>
+
+    <!-- ================= 11 ================= -->
+    <section class="chapter" id="s11" data-title="Database Basics">
+      <p class="chapter-label">Chapter 11</p>
+      <h2 class="title">Database Basics</h2>
+      <p class="goal"><strong>By the end:</strong> you can choose a database type and understand how to keep it secure.</p>
+
+      <h3 id="s11-diff">Frontend, backend and database</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Part</th><th>Job</th><th>Where it runs</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend (Flutter)</td><td>Show UI, collect input</td><td>User's device</td></tr>
+          <tr><td>Backend</td><td>Rules, security, talks to database</td><td>Your server / cloud</td></tr>
+          <tr><td>Database</td><td>Stores data</td><td>Server / cloud</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="s11-types">Popular options</h3>
+      <div class="cards">
+        <div class="card"><span class="k">SQL</span><h4>MySQL / PostgreSQL</h4><p>Data in tables with rows and columns. Great for structured data with relationships.</p></div>
+        <div class="card"><span class="k">NOSQL</span><h4>MongoDB</h4><p>Stores flexible JSON-like documents. Handy when data shape changes.</p></div>
+        <div class="card"><span class="k">BAAS</span><h4>Firebase Firestore</h4><p>A hosted document database with a Flutter SDK. Quick to start; secured by rules.</p></div>
+        <div class="card"><span class="k">LOGIN</span><h4>Firebase Authentication</h4><p>Ready-made sign-in: email, Google, phone. No password code to write.</p></div>
+      </div>
+
+      <h3 id="s11-secrets">Never put secrets in a client app</h3>
+      <div class="callout danger"><span class="tag">Very important</span><p>Anything inside your Flutter app can be extracted by someone determined: strings, API keys, database passwords. <strong>Never</strong> put a database username, password, or admin secret key in app code. Anyone who gets them could read or delete all your data.</p></div>
+      <div class="diagram">
+        <div class="flow">
+          <div class="node"><b>Flutter app</b><small>no DB password</small></div>
+          <div class="link"><span>HTTPS</span><i></i></div>
+          <div class="node a"><b>Backend API</b><small>holds secrets safely<br>checks permissions</small></div>
+          <div class="link"><span>private</span><i></i></div>
+          <div class="node"><b>Database</b><small>not public</small></div>
+        </div>
+        <div class="cap">The backend is the guard at the door. The database is never exposed to the internet directly.</div>
+      </div>
+      <p>This is why a <strong>backend API</strong> is often needed: it checks <em>who</em> is asking and <em>what</em> they may do. Firebase is an exception, because it is designed to be called from apps. It stays safe through <strong>security rules</strong> and Authentication. Its config values are identifiers, not secrets.</p>
+
+      <h3 id="s11-example">Example: saving student course information</h3>
+      <p>The database table:</p>
+      <div class="code other"><div class="bar"><span class="lang">SQL</span><button class="copy" type="button">Copy</button></div><pre><code>CREATE TABLE enrollments (
+  id          SERIAL PRIMARY KEY,
+  student_id  INT NOT NULL,
+  course_name TEXT NOT NULL,
+  enrolled_at TIMESTAMP DEFAULT NOW()
+);</code></pre></div>
+      <p>A tiny backend endpoint that saves an enrollment (Node.js with Express; this is <em>not</em> Flutter):</p>
+      <div class="code other"><div class="bar"><span class="lang">Node.js</span><button class="copy" type="button">Copy</button></div><pre><code>app.post('/enroll', requireLogin, async (req, res) =&gt; {
+  const { courseName } = req.body;
+  await db.query(
+    'INSERT INTO enrollments (student_id, course_name) VALUES ($1, $2)',
+    [req.user.id, courseName]   // user id comes from the verified token
+  );
+  res.status(201).json({ message: 'Enrolled!' });
+});</code></pre></div>
+      <p>And the Flutter side that calls it:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>Future&lt;void&gt; enroll(String courseName, String token) async {
+  final response = await http.post(
+    Uri.parse('https://api.example.com/enroll'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({'courseName': courseName}),
+  );
+  if (response.statusCode != 201) {
+    throw Exception('Enrollment failed');
+  }
+}</code></pre></div>
+      <p>Notice the app never touches the database. It only knows the API address and the user's token.</p>
+    </section>
+
+    <!-- ================= 12 ================= -->
+    <section class="chapter" id="s12" data-title="State Management and Reusable Code">
+      <p class="chapter-label">Chapter 12</p>
+      <h2 class="title">State Management and Reusable Code</h2>
+      <p class="goal"><strong>By the end:</strong> you know how to share data between widgets and what to learn next.</p>
+
+      <h3 id="s12-local">Local widget state</h3>
+      <p>What you used in Chapter 6. State lives inside one widget. Perfect for things only that widget cares about: a toggle, a text field, a selected tab.</p>
+
+      <h3 id="s12-lift">Lifting state up</h3>
+      <p>If two widgets need the same data, move the state to their <strong>closest common parent</strong>. The parent passes the value down, and passes a function down so children can ask for changes.</p>
+      <div class="diagram">
+        <div class="stack-col">
+          <div class="node a"><b>Parent (owns state)</b><small>int count</small></div>
+          <div class="flow">
+            <div class="node"><b>DisplayWidget</b><small>receives count</small></div>
+            <div class="link" style="min-width:24px"></div>
+            <div class="node"><b>ButtonWidget</b><small>receives onTap callback</small></div>
+          </div>
+        </div>
+        <div class="cap">Data flows down. Events flow up.</div>
+      </div>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class ParentPage extends StatefulWidget {
+  const ParentPage({super.key});
+
+  @override
+  State&lt;ParentPage&gt; createState() =&gt; _ParentPageState();
+}
+
+class _ParentPageState extends State&lt;ParentPage&gt; {
+  int _count = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CountDisplay(count: _count),
+        AddButton(onTap: () =&gt; setState(() =&gt; _count++)),
+      ],
+    );
+  }
+}
+
+class CountDisplay extends StatelessWidget {
+  const CountDisplay({super.key, required this.count});
+  final int count;
+
+  @override
+  Widget build(BuildContext context) =&gt; Text('Count: $count');
+}
+
+class AddButton extends StatelessWidget {
+  const AddButton({super.key, required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) =&gt;
+      ElevatedButton(onPressed: onTap, child: const Text('Add'));
+}</code></pre></div>
+
+      <h3 id="s12-constructors">Passing data through constructors</h3>
+      <p>You already did it above. Constructor parameters (<code class="i">required this.count</code>) are the simplest and clearest way to share data downward. Prefer them until the chain gets very deep.</p>
+
+      <h3 id="s12-custom">Reusable custom widgets</h3>
+      <p>Extract repeated UI into small widgets with clear parameters, as with <code class="i">CourseCard</code> in Chapter 8. Small widgets are easier to read, test and reuse. Mark them <code class="i">const</code> where possible for better performance.</p>
+
+      <h3 id="s12-next">Provider and Riverpod: next steps</h3>
+      <p>When passing data through many layers becomes painful, use a state management package. Both let any widget read shared state without passing it through every constructor.</p>
+      <div class="cards">
+        <div class="card"><span class="k">BEGINNER FRIENDLY</span><h4>Provider</h4><p>Simple and widely used. Wraps a <code class="i">ChangeNotifier</code> and rebuilds listeners when it changes.</p></div>
+        <div class="card"><span class="k">MODERN</span><h4>Riverpod</h4><p>From the same author as Provider. More flexible and safer, with less reliance on the widget tree.</p></div>
+      </div>
+      <p>A taste of Provider:</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>class CounterModel extends ChangeNotifier {
+  int count = 0;
+
+  void increment() {
+    count++;
+    notifyListeners(); // tells listening widgets to rebuild
+  }
+}
+
+// In main():
+runApp(
+  ChangeNotifierProvider(
+    create: (_) =&gt; CounterModel(),
+    child: const MyApp(),
+  ),
+);
+
+// In any widget:
+final count = context.watch&lt;CounterModel&gt;().count;
+context.read&lt;CounterModel&gt;().increment();</code></pre></div>
+      <div class="callout note"><span class="tag">Don't rush</span><p>You do not need these until your app has several screens sharing data. Master <code class="i">setState</code> and constructors first.</p></div>
+    </section>
+
+    <!-- ================= 13 ================= -->
+    <section class="chapter" id="s13" data-title="Common Beginner Mistakes">
+      <p class="chapter-label">Chapter 13</p>
+      <h2 class="title">Common Beginner Mistakes</h2>
+      <p class="goal"><strong>By the end:</strong> you can spot and avoid the nine mistakes almost every beginner makes.</p>
+
+      <h3 id="s13-1">1. Putting everything in one widget</h3>
+      <p>A 600-line <code class="i">build</code> method is hard to read. <strong>Fix:</strong> extract sections into small widgets like <code class="i">ProfileHeader</code> and <code class="i">CourseList</code>.</p>
+
+      <h3 id="s13-2">2. Fixed widths and heights everywhere</h3>
+      <p>A <code class="i">width: 400</code> overflows on a small phone and looks tiny on a tablet.</p>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>// Fragile
+Container(width: 400, child: Text('Hello'))
+
+// Flexible
+Row(children: [Expanded(child: Text('Hello'))])</code></pre></div>
+      <p>See a yellow-black striped "overflow" warning? That is usually this. Use <code class="i">Expanded</code>, <code class="i">Flexible</code>, <code class="i">ListView</code> or <code class="i">SingleChildScrollView</code>.</p>
+
+      <h3 id="s13-3">3. Forgetting setState()</h3>
+      <div class="code"><div class="bar"><span class="lang">Dart</span><button class="copy" type="button">Copy</button></div><pre><code>// Wrong: value changes, screen does not
+onPressed: () { _count++; }
+
+// Right
+onPressed: () { setState(() { _count++; }); }</code></pre></div>
+
+      <h3 id="s13-4">4. Deeply nested layouts without structure</h3>
+      <p>Ten levels of brackets are painful. <strong>Fix:</strong> pull parts into methods or, better, separate widgets. Your editor's "Extract Widget" refactor does it in one click.</p>
+
+      <h3 id="s13-5">5. Ignoring loading and error states</h3>
+      <p>Networks fail. Always handle waiting, error, empty and success (Chapter 8 and 10).</p>
+
+      <h3 id="s13-6">6. Repeating code</h3>
+      <p>Copy-pasting the same card five times means five places to fix later. Make one reusable widget.</p>
+
+      <h3 id="s13-7">7. Poor spacing and inconsistent colors</h3>
+      <p>Define colors in <code class="i">ThemeData</code> and use a spacing scale. Do not scatter <code class="i">Color(0xFF123456)</code> across the code.</p>
+
+      <h3 id="s13-8">8. Exposing API keys or database credentials</h3>
+      <div class="callout danger"><span class="tag">Security</span><p>Never commit secrets to GitHub or put them in app code. Keep them on a backend, and use environment variables there.</p></div>
+
+      <h3 id="s13-9">9. Not testing on different screen sizes</h3>
+      <p>Test a small phone, a large phone, a tablet, landscape mode, and with large system fonts. Flutter DevTools and your emulator's device list make this easy.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
+        <tbody>
+          <tr><td>Yellow/black overflow stripes</td><td>Fixed sizes or missing scroll view</td></tr>
+          <tr><td>Screen doesn't update on tap</td><td>Missing <code class="i">setState()</code></td></tr>
+          <tr><td>"Unbounded height" error</td><td>ListView inside Column without <code class="i">Expanded</code></td></tr>
+          <tr><td>API called repeatedly</td><td>Fetch is inside <code class="i">build()</code></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ================= 14 ================= -->
+    <section class="chapter" id="s14" data-title="Final Roadmap and Practice Projects">
+      <p class="chapter-label">Chapter 14</p>
+      <h2 class="title">Final Roadmap and Practice Projects</h2>
+      <p class="goal"><strong>By the end:</strong> you know exactly what to learn next and what to build.</p>
+
+      <h3 id="s14-road">Your learning sequence</h3>
+      <ol class="roadmap">
+        <li><b>Understand Flutter and Dart</b><span>Variables, functions, classes, null safety. (Chapters 1 and 2)</span></li>
+        <li><b>Learn essential widgets</b><span>Text, Container, Row, Column, ListView. (Chapter 3)</span></li>
+        <li><b>Practice layouts</b><span>Rebuild screens from your favorite apps. (Chapter 4)</span></li>
+        <li><b>Build a simple UI</b><span>A profile or course screen. (Chapters 5 and 8)</span></li>
+        <li><b>Learn state and navigation</b><span>setState, Navigator, tabs. (Chapters 6 and 7)</span></li>
+        <li><b>Create forms</b><span>Validation, login screens. (Chapter 9)</span></li>
+        <li><b>Connect an API</b><span>GET, POST, loading and error states. (Chapter 10)</span></li>
+        <li><b>Understand databases and authentication</b><span>Backend, tokens, security. (Chapter 11)</span></li>
+        <li><b>Build a complete project</b><span>Combine everything with Provider or Riverpod. (Chapter 12)</span></li>
+        <li><b>Test and deploy</b><span>Widget tests, release builds, Play Store or App Store.</span></li>
+      </ol>
+
+      <h3 id="s14-projects">Three beginner projects</h3>
+      <div class="cards">
+        <div class="card"><span class="k">PROJECT 1 · EASY</span><h4>Counter and profile app</h4><p>A counter with a reset button, plus a profile page. Practice: widgets, layout, setState, two screens.</p></div>
+        <div class="card"><span class="k">PROJECT 2 · MEDIUM</span><h4>Course listing app</h4><p>Home with a course grid, detail page, search box, favorite toggle. Practice: ListView, navigation, forms.</p></div>
+        <div class="card"><span class="k">PROJECT 3 · CHALLENGE</span><h4>Notes app with an API</h4><p>Login, list notes, add, edit and delete via a backend. Practice: http, async, auth, error handling.</p></div>
+      </div>
+
+      <h3 id="s14-checklist">Before you publish</h3>
+      <ul class="list">
+        <li>Add an app icon and name.</li>
+        <li>Test on a real device.</li>
+        <li>Confirm no secrets are in the code.</li>
+        <li>Run <code class="i">flutter build apk --release</code> (Android) or build through Xcode (iOS).</li>
+      </ul>
+
+      <div class="callout tip"><span class="tag">Keep going</span><p>The best way to learn Flutter is to build. Read the official docs at <a href="https://docs.flutter.dev" target="_blank" rel="noopener">docs.flutter.dev</a>, browse packages at <a href="https://pub.dev" target="_blank" rel="noopener">pub.dev</a>, and try the Dart language tour at <a href="https://dart.dev/language" target="_blank" rel="noopener">dart.dev</a>. You can do this.</p></div>
+    </section>
+
+    <nav class="pager" aria-label="Chapter pagination" id="pager"></nav>
+  </article>
+  </main>
+
+  <aside class="toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ul id="tocList"></ul>
+  </aside>
+</div>
+
+<footer class="site">Flutter From Zero · A beginner's handbook · Built with plain HTML, CSS and JavaScript.</footer>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(s, c){ return (c||document).querySelector(s); };
+  var $$ = function(s, c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+
+  /* ---------- Light Dart-ish syntax highlighting ---------- */
+  var KEYWORDS = 'abstract as async await break case catch class const continue else enum extends factory final finally for if import in is late new null override required return static super switch this throw true false try var void while with yield dynamic';
+  var kwSet = {}; KEYWORDS.split(' ').forEach(function(k){ kwSet[k]=1; });
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function highlight(src){
+    var re = /(\/\/[^\n]*)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)\b/g;
+    var out = '', last = 0, m;
+    while((m = re.exec(src))){
+      out += esc(src.slice(last, m.index));
+      if(m[1]) out += '<span class="tk-c">'+esc(m[1])+'</span>';
+      else if(m[2]) out += '<span class="tk-s">'+esc(m[2])+'</span>';
+      else if(m[3]) out += '<span class="tk-n">'+m[3]+'</span>';
+      else if(kwSet[m[4]]) out += '<span class="tk-k">'+m[4]+'</span>';
+      else if(/^[A-Z]/.test(m[4])) out += '<span class="tk-t">'+m[4]+'</span>';
+      else out += m[4];
+      last = re.lastIndex;
+    }
+    return out + esc(src.slice(last));
+  }
+  function highlightJSON(src){
+    return esc(src).replace(/(&quot;|")([^"\n]*?)(\1)(\s*:)?/g, function(m,q,t,q2,colon){
+      return colon ? '<span class="tk-t">"'+t+'"</span>'+colon : '<span class="tk-s">"'+t+'"</span>';
+    }).replace(/\b(\d+)\b/g,'<span class="tk-n">$1</span>');
+  }
+  $$('.code').forEach(function(box){
+    var code = $('code', box), lang = $('.lang', box).textContent.trim();
+    var text = code.textContent;
+    if(lang === 'Dart') code.innerHTML = highlight(text);
+    else if(lang === 'JSON') code.innerHTML = highlightJSON(text);
+    code.parentNode.setAttribute('tabindex','0');
+    code.parentNode.setAttribute('aria-label', lang + ' code example');
+  });
+
+  /* ---------- Copy buttons ---------- */
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  $$('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var text = $('code', btn.closest('.code')).textContent;
+      var done = function(){
+        btn.textContent = 'Copied'; btn.classList.add('done');
+        setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('done'); }, 1600);
+      };
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    });
+  });
+
+  /* ---------- Mobile menu ---------- */
+  var sidebar = $('#sidebar'), scrim = $('#scrim'), menuBtn = $('#menuBtn');
+  function setMenu(open){
+    sidebar.classList.toggle('open', open);
+    scrim.classList.toggle('show', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+  }
+  menuBtn.addEventListener('click', function(){ setMenu(!sidebar.classList.contains('open')); });
+  scrim.addEventListener('click', function(){ setMenu(false); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') setMenu(false); });
+  $$('#chapterList a').forEach(function(a){ a.addEventListener('click', function(){ setMenu(false); }); });
+
+  /* ---------- Chapters, TOC, pager ---------- */
+  var chapters = $$('section.chapter');
+  var chapterLinks = $$('#chapterList a');
+  var tocList = $('#tocList');
+  var pager = $('#pager');
+  var currentIdx = -1;
+
+  function renderToc(idx){
+    var sec = chapters[idx];
+    tocList.innerHTML = '';
+    $$('h3', sec).forEach(function(h){
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#' + h.id; a.textContent = h.textContent; a.dataset.target = h.id;
+      li.appendChild(a); tocList.appendChild(li);
+    });
+  }
+  function renderPager(idx){
+    var html = '';
+    if(idx > 0){
+      var p = chapters[idx-1];
+      html += '<a href="#'+p.id+'"><small>← Previous</small>'+p.dataset.title+'</a>';
+    }
+    if(idx < chapters.length-1){
+      var n = chapters[idx+1];
+      html += '<a href="#'+n.id+'"><small>Next →</small>'+n.dataset.title+'</a>';
+    }
+    pager.innerHTML = html;
+  }
+  function setChapter(idx){
+    if(idx === currentIdx) return;
+    currentIdx = idx;
+    chapterLinks.forEach(function(a,i){
+      a.classList.toggle('active', i===idx);
+      if(i===idx) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current');
+    });
+    if(idx >= 0){
+      renderToc(idx);
+      var a = chapterLinks[idx];
+      if(a && sidebar.scrollHeight > sidebar.clientHeight){
+        var top = a.offsetTop - sidebar.clientHeight/2;
+        sidebar.scrollTo({top: top, behavior:'auto'});
+      }
+    }
+  }
+  renderPager(chapters.length-1);
+
+  /* ---------- Scroll handling (progress, active chapter, active TOC) ---------- */
+  var ticking = false;
+  function onScroll(){
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? Math.min(100, Math.max(0, window.scrollY / max * 100)) : 0;
+    var bar = $('#progress');
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+
+    var line = 120, idx = -1;
+    for(var i=0;i<chapters.length;i++){
+      if(chapters[i].getBoundingClientRect().top <= line) idx = i; else break;
+    }
+    setChapter(idx);
+    if(idx >= 0) renderPager(idx);
+    else pager.innerHTML = '';
+
+    if(idx >= 0){
+      var links = $$('a', tocList), active = null;
+      links.forEach(function(a){
+        var h = document.getElementById(a.dataset.target);
+        if(h && h.getBoundingClientRect().top <= line) active = a;
+      });
+      links.forEach(function(a){ a.classList.toggle('active', a===active); });
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(onScroll); }
+  }, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>
